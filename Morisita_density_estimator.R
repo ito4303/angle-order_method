@@ -26,5 +26,8 @@ estimate_density <- function(r, n = 3L) {
                      k * (n * k_prime[i] - 1) / sum(r[i, ]^2, na.rm = TRUE))
   m_hat2 <- sum(m_hat2) / N
   m_hat0 <- (m_hat1 + m_hat2) / 2
-  return(m_hat0 / pi)
+  if (m_hat1 > m_hat2)
+    return(m_hat1 / pi)
+  else
+    return(m_hat0 / pi)
 }
