@@ -1,6 +1,6 @@
-# Angle-order estimator for population density using Morisita's spacing method
+# Morisita's angle-order method to estimate population density
 
-An R function to estimate population density using Morisita's spacing method
+An R function to estimate population density using Morisita's angle-order method
 
 ## References
 

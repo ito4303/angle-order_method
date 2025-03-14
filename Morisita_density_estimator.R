@@ -13,21 +13,24 @@ estimate_density <- function(r, n = 3L) {
   # n: an integer indicating that n-th neighbour is measured (n >= 3)
   # Returns the estimated density of the population
   
+  if (!is.matrix(r))
+    stop("r must be a matrix.")
   if (n < 3)
     stop("n must be equal to or larger than 3.")
   N <- nrow(r) # number of the sampling points
+  if (N < 2)
+    stop("The number of the sampling points must be equal to or larger than 2.")
   k <- ncol(r) # number of the directions
+  if (k < 2)
+    stop("The number of the directions must be equal to or larger than 2.")
   
-  K <- sum(!is.na(r))   # total number of counts excluding NA
-  k_prime <- apply(!is.na(r), 1, sum)
+  K <- sum(!is.na(r))   # total number of measurements excluding NA
+  k_prime <- rowSums(!is.na(r)) # number of measurements for each sampling point
   m_hat1 <- k * (n - 1) / K * sum(1 / r^2, na.rm = TRUE)
-  m_hat2 <- sapply(1:N,
-                   function(i)
-                     k * (n * k_prime[i] - 1) / sum(r[i, ]^2, na.rm = TRUE))
-  m_hat2 <- sum(k_prime * m_hat2) / K
+  m_hat2i <- k * (k_prime * n - 1) / rowSums(r^2, na.rm = TRUE)
+  m_hat2 <- sum(k_prime * m_hat2i) / K
   m_hat0 <- (m_hat1 + m_hat2) / 2
-  if (m_hat1 > m_hat2)
-    return(m_hat1 / pi)
-  else
-    return(m_hat0 / pi)
+  density <- ifelse(m_hat1 > m_hat2, m_hat1 / pi, m_hat0 / pi)
+
+  return(density)
 }
